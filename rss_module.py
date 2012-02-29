@@ -96,3 +96,65 @@ def rssdownload(username, feedurl, last_reference=0, mode=0):
 def linkmine(summary):
     return (item[2] for item in html.iterlinks(summary))
 
+"""
+import datetime
+import feedparser
+import re
+    
+def get_twitter(url, limit=3):
+    """Takes a twitter rss feed and returns a list of dictionaries, one per
+    tweet. Each dictionary contains two attributes:
+        - An html ready string with the @, # and links parsed to the correct
+        html code
+        - A datetime object of the posted date"""
+
+    twitter_entries = []
+    for entry in feedparser.parse(url)['entries'][:limit]:
+
+        # convert the given time format to datetime
+        posted_datetime = datetime.datetime(
+            entry['updated_parsed'][0],
+            entry['updated_parsed'][1],
+            entry['updated_parsed'][2],
+            entry['updated_parsed'][3],
+            entry['updated_parsed'][4],
+            entry['updated_parsed'][5],
+            entry['updated_parsed'][6],
+        )
+        
+        # format the date a bit
+        if posted_datetime.year == datetime.datetime.now().year:
+            posted = posted_datetime.strftime("%b %d")
+        else:
+            posted = posted_datetime.strftime("%b %d %y")
+        
+        # strip the "<username>: " that preceeds all twitter feed entries
+        text = re.sub(r'^\w+:\s', '', entry['title'])
+        
+# parse links
+        text = re.sub(
+            r"(http(s)?://[\w./?=%&\-]+)",
+            lambda x: "<a href='%s'>%s</a>" % (x.group(), x.group()),
+            text)
+        
+        # parse @tweeter
+        text = re.sub(
+            r'@(\w+)',
+            lambda x: "<a href='http://twitter.com/%s'>%s</a>"\
+                 % (x.group()[1:], x.group()),
+            text)
+        
+        # parse #hashtag
+        text = re.sub(
+            r'#(\w+)',
+            lambda x: "<a href='http://twitter.com/search?q=%%23%s'>%s</a>"\
+                 % (x.group()[1:], x.group()),
+            text)
+        
+        twitter_entries.append({
+            'text': text,
+            'posted': posted,
+            })
+        
+    return twitter_entries
+"""
